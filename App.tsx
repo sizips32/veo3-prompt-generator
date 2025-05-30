@@ -1,6 +1,95 @@
 import * as React from 'react';
 import { useState, useCallback, ChangeEvent } from 'react';
 // @ts-ignore - JSX 타입 정의를 위해 필요
+
+// 한국어를 영어로 번역하는 간단한 맵 (기본적인 예시)
+const koreanToEnglishMap: Record<string, string> = {
+  '고요한': 'peaceful',
+  '밤하늘': 'night sky',
+  '캠프파이어': 'campfire',
+  '모닥불': 'bonfire',
+  '노래': 'sing',
+  '부르다': 'sing',
+  '시네마틱': 'cinematic',
+  '타임랩스': 'timelapse',
+  '항공': 'aerial',
+  '촬영': 'shot',
+  '드론': 'drone',
+  '부드러운': 'soft',
+  '조명': 'lighting',
+  '따뜻한': 'warm',
+  '색감': 'color tone',
+  '평화로운': 'peaceful',
+  '새벽': 'dawn',
+  '숲속': 'forest',
+  '고화질': 'high resolution',
+  '네이티브': 'native',
+  '오디오': 'audio',
+  '동기화': 'synchronized',
+  '영화적': 'cinematic',
+  '용어': 'terms',
+  '지원': 'support',
+  '적극': 'actively',
+  '활용': 'utilize',
+  '하세요': '',
+  '예': 'example',
+  '4K': '4K',
+  '해상도': 'resolution',
+  '하이퍼리얼리스틱': 'hyperrealistic',
+  '짧은': 'short',
+  '초': 'second',
+  '클립': 'clip',
+  '장면': 'scene',
+  '설명': 'description',
+  '주요': 'main',
+  '액션': 'action',
+  '핵심': 'key',
+  '요소': 'elements',
+  '스타일': 'style',
+  '영향': 'influence',
+  '카메라': 'camera',
+  '앵글': 'angle',
+  '움직임': 'movement',
+  '색상': 'color',
+  '팔레트': 'palette',
+  '배경': 'background',
+  '환경': 'environment',
+  '시간대': 'time of day',
+  '분위기': 'mood',
+  '화면': 'screen',
+  '비율': 'aspect ratio',
+  '제외할': 'negative',
+  '추가': 'additional',
+  '지시사항': 'details',
+  '초기화': 'reset',
+  '생성': 'generate',
+  '프롬프트': 'prompt',
+  '로딩': 'loading',
+  '중': 'in progress',
+  '오류': 'error',
+  '다시': 'again',
+  '시도': 'try',
+  '해주세요': 'please'
+};
+
+// 한국어 문장을 영어로 번역하는 함수 (기본적인 예시)
+const translateToEnglish = (text: string): string => {
+  if (!text) return '';
+  
+  // 공백과 특수문자로 분리
+  const words = text.split(/([\s,.;:!?]+)/);
+  
+  // 각 단어를 번역
+  const translatedWords = words.map(word => {
+    // 특수문자나 공백은 그대로 유지
+    if (/^[\s,.;:!?]+$/.test(word)) return word;
+    
+    // 번역 맵에 있는 단어는 번역, 없으면 원본 유지
+    return koreanToEnglishMap[word] || word;
+  });
+  
+  return translatedWords.join('');
+};
 import { PromptElements } from './types';
 import TextInput from './components/TextInput';
 import SelectInput from './components/SelectInput';
@@ -52,6 +141,14 @@ const App = (): React.ReactElement => {
       // 시뮬레이션을 위한 지연 (실제 API 호출 시에는 제거)
       await new Promise(resolve => setTimeout(resolve, 800));
       
+      // 입력값을 영어로 번역
+      const translateField = (value: string): string => {
+        if (!value) return '';
+        // 실제 프로덕션에서는 번역 API를 사용하세요.
+        // 여기서는 간단한 예시로 한국어를 영어로 변환하는 맵을 사용합니다.
+        return translateToEnglish(value);
+      };
+      
       const {
         subject, mainAction, keyElements, visualStyle, artisticInfluence,
         cameraAngle, cameraMovement, lightingStyle, colorPalette,
@@ -60,30 +157,36 @@ const App = (): React.ReactElement => {
 
       const parts: string[] = [];
 
-      if (subject) parts.push(subject.trim());
-      if (mainAction) parts.push(`Main action: ${mainAction.trim()}.`);
-      if (keyElements) parts.push(`Key elements: ${keyElements.trim()}.`);
+      // 각 필드를 영어로 번역하여 추가
+      if (subject) parts.push(translateField(subject.trim()));
+      if (mainAction) parts.push(`Main action: ${translateField(mainAction.trim())}.`);
+      if (keyElements) parts.push(`Key elements: ${translateField(keyElements.trim())}.`);
       
-      const styleParts = [visualStyle, artisticInfluence].filter(Boolean);
+      const styleParts = [visualStyle, artisticInfluence]
+        .filter(Boolean)
+        .map(style => translateField(style as string));
       if (styleParts.length > 0) parts.push(`Style: ${styleParts.join(', ')}.`);
 
-      const cameraParts = [cameraAngle, cameraMovement].filter(Boolean);
+      const cameraParts = [cameraAngle, cameraMovement]
+        .filter(Boolean)
+        .map(camera => translateField(camera as string));
       if (cameraParts.length > 0) parts.push(`Camera: ${cameraParts.join(', ')}.`);
       
-      if (lightingStyle) parts.push(`Lighting: ${lightingStyle}.`);
-      if (colorPalette) parts.push(`Colors: ${colorPalette}.`);
+      if (lightingStyle) parts.push(`Lighting: ${translateField(lightingStyle)}.`);
+      if (colorPalette) parts.push(`Colors: ${translateField(colorPalette)}.`);
 
       let settingAndTime = '';
-      if (setting) settingAndTime += setting.trim();
-      if (timeOfDay) settingAndTime += settingAndTime ? ` at ${timeOfDay}` : timeOfDay;
+      if (setting) settingAndTime += translateField(setting.trim());
+      if (timeOfDay) settingAndTime += settingAndTime ? ` at ${translateField(timeOfDay)}` : translateField(timeOfDay);
       if (settingAndTime) parts.push(`Setting: ${settingAndTime}.`);
       
-      if (mood) parts.push(`Mood: ${mood.trim()}.`);
-      if (aspectRatio) parts.push(`Aspect ratio: ${aspectRatio}.`);
-      if (negativePrompt) parts.push(`Negative prompt: ${negativePrompt.trim()}.`);
-      if (additionalDetails) parts.push(`Additional details: ${additionalDetails.trim()}.`);
+      if (mood) parts.push(`Mood: ${translateField(mood.trim())}.`);
+      if (aspectRatio) parts.push(`Aspect ratio: ${translateField(aspectRatio)}.`);
+      if (negativePrompt) parts.push(`Negative prompt: ${translateField(negativePrompt.trim())}.`);
+      if (additionalDetails) parts.push(`Additional details: ${translateField(additionalDetails.trim())}.`);
 
-      setGeneratedPrompt(parts.join(' ').replace(/\.\s*\./g, '.')); // Clean up multiple periods
+      // 중복된 마침표 제거 및 공백 정리
+      setGeneratedPrompt(parts.join(' ').replace(/\.\s*\./g, '.').replace(/\s+/g, ' ').trim());
     } catch (error) {
       console.error('프롬프트 생성 중 오류 발생:', error);
       alert('프롬프트 생성 중 오류가 발생했습니다. 다시 시도해주세요.');
