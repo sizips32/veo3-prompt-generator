@@ -1,0 +1,5 @@
+{
+  "name": "Veo3 Prompt Generator",
+  "description": "A tool to help users construct detailed prompts for the Veo3 video generation model. Users can input various elements like subject, action, style, camera angles, and more to generate a comprehensive prompt.",
+  "requestFramePermissions": []
+}
