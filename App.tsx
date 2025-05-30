@@ -1,4 +1,6 @@
-import React, { useState, useCallback, ChangeEvent } from 'react';
+import * as React from 'react';
+import { useState, useCallback, ChangeEvent } from 'react';
+// @ts-ignore - JSX 타입 정의를 위해 필요
 import { PromptElements } from './types';
 import TextInput from './components/TextInput';
 import SelectInput from './components/SelectInput';
@@ -31,7 +33,7 @@ const initialPromptElements: PromptElements = {
   additionalDetails: '',
 };
 
-const App = (): JSX.Element => {
+const App = (): React.ReactElement => {
   const [promptElements, setPromptElements] = useState<PromptElements>(initialPromptElements);
   const [generatedPrompt, setGeneratedPrompt] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
@@ -44,39 +46,50 @@ const App = (): JSX.Element => {
     setPromptElements(prev => ({ ...prev, [name]: value }));
   }, []);
 
-  const handleGeneratePrompt = useCallback(() => {
-    const {
-      subject, mainAction, keyElements, visualStyle, artisticInfluence,
-      cameraAngle, cameraMovement, lightingStyle, colorPalette,
-      setting, timeOfDay, mood, aspectRatio, negativePrompt, additionalDetails
-    } = promptElements;
+  const handleGeneratePrompt = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      // 시뮬레이션을 위한 지연 (실제 API 호출 시에는 제거)
+      await new Promise(resolve => setTimeout(resolve, 800));
+      
+      const {
+        subject, mainAction, keyElements, visualStyle, artisticInfluence,
+        cameraAngle, cameraMovement, lightingStyle, colorPalette,
+        setting, timeOfDay, mood, aspectRatio, negativePrompt, additionalDetails
+      } = promptElements;
 
-    const parts: string[] = [];
+      const parts: string[] = [];
 
-    if (subject) parts.push(subject.trim());
-    if (mainAction) parts.push(`Main action: ${mainAction.trim()}.`);
-    if (keyElements) parts.push(`Key elements: ${keyElements.trim()}.`);
-    
-    const styleParts = [visualStyle, artisticInfluence].filter(Boolean);
-    if (styleParts.length > 0) parts.push(`Style: ${styleParts.join(', ')}.`);
+      if (subject) parts.push(subject.trim());
+      if (mainAction) parts.push(`Main action: ${mainAction.trim()}.`);
+      if (keyElements) parts.push(`Key elements: ${keyElements.trim()}.`);
+      
+      const styleParts = [visualStyle, artisticInfluence].filter(Boolean);
+      if (styleParts.length > 0) parts.push(`Style: ${styleParts.join(', ')}.`);
 
-    const cameraParts = [cameraAngle, cameraMovement].filter(Boolean);
-    if (cameraParts.length > 0) parts.push(`Camera: ${cameraParts.join(', ')}.`);
-    
-    if (lightingStyle) parts.push(`Lighting: ${lightingStyle}.`);
-    if (colorPalette) parts.push(`Colors: ${colorPalette}.`);
+      const cameraParts = [cameraAngle, cameraMovement].filter(Boolean);
+      if (cameraParts.length > 0) parts.push(`Camera: ${cameraParts.join(', ')}.`);
+      
+      if (lightingStyle) parts.push(`Lighting: ${lightingStyle}.`);
+      if (colorPalette) parts.push(`Colors: ${colorPalette}.`);
 
-    let settingAndTime = '';
-    if (setting) settingAndTime += setting.trim();
-    if (timeOfDay) settingAndTime += settingAndTime ? ` at ${timeOfDay}` : timeOfDay;
-    if (settingAndTime) parts.push(`Setting: ${settingAndTime}.`);
-    
-    if (mood) parts.push(`Mood: ${mood.trim()}.`);
-    if (aspectRatio) parts.push(`Aspect ratio: ${aspectRatio}.`);
-    if (negativePrompt) parts.push(`Negative prompt: ${negativePrompt.trim()}.`);
-    if (additionalDetails) parts.push(`Additional details: ${additionalDetails.trim()}.`);
+      let settingAndTime = '';
+      if (setting) settingAndTime += setting.trim();
+      if (timeOfDay) settingAndTime += settingAndTime ? ` at ${timeOfDay}` : timeOfDay;
+      if (settingAndTime) parts.push(`Setting: ${settingAndTime}.`);
+      
+      if (mood) parts.push(`Mood: ${mood.trim()}.`);
+      if (aspectRatio) parts.push(`Aspect ratio: ${aspectRatio}.`);
+      if (negativePrompt) parts.push(`Negative prompt: ${negativePrompt.trim()}.`);
+      if (additionalDetails) parts.push(`Additional details: ${additionalDetails.trim()}.`);
 
-    setGeneratedPrompt(parts.join(' ').replace(/\.\s*\./g, '.')); // Clean up multiple periods
+      setGeneratedPrompt(parts.join(' ').replace(/\.\s*\./g, '.')); // Clean up multiple periods
+    } catch (error) {
+      console.error('프롬프트 생성 중 오류 발생:', error);
+      alert('프롬프트 생성 중 오류가 발생했습니다. 다시 시도해주세요.');
+    } finally {
+      setIsLoading(false);
+    }
   }, [promptElements]);
 
   const handleReset = useCallback(() => {
@@ -115,11 +128,12 @@ const App = (): JSX.Element => {
         )}
       </header>
 
-      <main className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 bg-gray-800 p-6 sm:p-8 rounded-xl shadow-2xl">
+      <main className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-8 bg-gray-800 p-6 sm:p-8 rounded-xl shadow-2xl">
         {/* 입력 패널 */}
-        <section className="col-span-1 bg-gray-900 rounded-lg p-4 shadow-md flex flex-col">
-          <h2 className="text-lg font-bold text-indigo-300 mb-3">📝 프롬프트 입력</h2>
-          <TextInput
+        <div className="flex-1 bg-gray-900 rounded-lg p-6 shadow-md">
+          <h2 className="text-xl font-bold text-indigo-300 mb-6 pb-3 border-b border-gray-700">📝 프롬프트 입력</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <TextInput
             label="🎬 주제 / 장면 설명 (Subject / Scene Description)"
             id="subject"
             name="subject"
@@ -242,10 +256,10 @@ const App = (): JSX.Element => {
             placeholder="예: 4K resolution, hyperrealistic, short 3 second clip"
             isTextArea
             rows={2}
+            className="md:col-span-2"
           />
-        </div>
-
-        <div className="mt-10 flex flex-col sm:flex-row sm:justify-end space-y-3 sm:space-y-0 sm:space-x-4">
+          
+          <div className="md:col-span-2 flex flex-col sm:flex-row justify-end space-y-3 sm:space-y-0 sm:space-x-4 mt-4">
             <button
                 type="button"
                 onClick={handleReset}
@@ -256,13 +270,32 @@ const App = (): JSX.Element => {
             <button
                 type="button"
                 onClick={handleGeneratePrompt}
-                className="w-full sm:w-auto px-8 py-3 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-indigo-500 transition duration-150 ease-in-out"
+                disabled={isLoading}
+                className={`w-full sm:w-auto px-8 py-3 border border-transparent rounded-md shadow-sm text-base font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-indigo-500 transition duration-150 ease-in-out ${
+                  isLoading 
+                    ? 'bg-gray-500 cursor-not-allowed' 
+                    : 'bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700'
+                }`}
             >
-                🚀 프롬프트 생성
+                {isLoading ? (
+                  <span className="flex items-center justify-center">
+                    <svg className="animate-spin -ml-1 mr-2 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    생성 중...
+                  </span>
+                ) : '🚀 프롬프트 생성'}
             </button>
+          </div>
+          
         </div>
         
-        <GeneratedPromptDisplay prompt={generatedPrompt} />
+        {/* 결과 패널 */}
+        <div className="flex-1 bg-gray-900 rounded-lg p-6 shadow-md">
+          <h2 className="text-xl font-bold text-indigo-300 mb-6 pb-3 border-b border-gray-700">✨ 생성된 프롬프트</h2>
+          <GeneratedPromptDisplay prompt={generatedPrompt} />
+        </div>
       </main>
       <footer className="text-center mt-12 pb-8">
         <p className="text-sm text-gray-500">

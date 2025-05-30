@@ -1,4 +1,6 @@
-import React, { ChangeEvent } from 'react';
+import * as React from 'react';
+import { ChangeEvent } from 'react';
+// @ts-ignore - JSX 타입 정의를 위해 필요
 
 interface TextInputProps {
   label: string;
@@ -9,12 +11,13 @@ interface TextInputProps {
   placeholder?: string;
   isTextArea?: boolean;
   rows?: number;
+  className?: string;
 }
 
-const TextInput = ({ label, id, name, value, onChange, placeholder, isTextArea = false, rows = 3 }: TextInputProps): JSX.Element => {
+const TextInput = ({ label, id, name, value, onChange, placeholder, isTextArea = false, rows = 3, className = '' }: TextInputProps): React.ReactElement => {
   const commonClasses = "w-full p-3 bg-gray-700 border border-gray-600 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 ease-in-out placeholder-gray-400 text-gray-100";
   return (
-    <div className="mb-6">
+    <div className={`mb-6 ${className}`}>
       <label htmlFor={id} className="block text-sm font-medium text-indigo-300 mb-1">
         {label}
       </label>
