@@ -1,11 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Veo3 Prompt Generator</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-<script type="importmap">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Veo3 Prompt Generator</title>
+  <!-- Google Fonts: Inter, Poppins, Montserrat -->
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Montserrat:wght@400;700&family=Poppins:wght@400;600&display=swap"
+    rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script type="importmap">
 {
   "imports": {
     "react": "https://esm.sh/react@^19.1.0",
@@ -14,10 +19,53 @@
   }
 }
 </script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            inter: ['Inter', 'sans-serif'],
+            poppins: ['Poppins', 'sans-serif'],
+            montserrat: ['Montserrat', 'sans-serif'],
+          },
+          colors: {
+            primary: {
+              DEFAULT: '#7C3AED',
+              light: '#A78BFA',
+              dark: '#5B21B6',
+            },
+            accent: {
+              DEFAULT: '#F472B6',
+              light: '#FBCFE8',
+              dark: '#BE185D',
+            },
+            glass: 'rgba(30, 41, 59, 0.6)',
+            glow: '#F472B6',
+          },
+          boxShadow: {
+            glow: '0 0 16px 2px #F472B6',
+            glass: '0 8px 32px 0 rgba(31, 38, 135, 0.37)',
+          },
+          animation: {
+            'fade-in': 'fadeIn 0.8s ease-out',
+          },
+          keyframes: {
+            fadeIn: {
+              '0%': { opacity: 0 },
+              '100%': { opacity: 1 },
+            },
+          },
+        },
+      },
+    }
+  </script>
 </head>
+
 <body class="bg-gray-900">
-    <div id="root"></div>
-    <script type="module" src="/index.tsx"></script>
+  <div id="root"></div>
+  <script type="module" src="/index.tsx"></script>
 </body>
-</html><link rel="stylesheet" href="index.css">
+
+</html>
+<link rel="stylesheet" href="index.css">
 <script src="index.tsx" type="module"></script>

@@ -24,17 +24,18 @@ const GeneratedPromptDisplay = ({ prompt }: GeneratedPromptDisplayProps): JSX.El
   }
 
   return (
-    <div className="mt-8 p-6 bg-gray-800 rounded-lg shadow-lg">
-      <h3 className="text-xl font-semibold text-indigo-300 mb-3">생성된 프롬프트:</h3>
-      <div className="p-4 bg-gray-700 rounded-md text-gray-200 whitespace-pre-wrap break-words max-h-96 overflow-y-auto">
+    <div className="mt-8 p-8 glass rounded-2xl shadow-glass animate-fade-in">
+      <h3 className="text-2xl font-bold text-primary mb-4 font-montserrat tracking-tight flex items-center gap-2">
+        <span className="text-2xl">✨</span> 생성된 프롬프트:
+      </h3>
+      <div className="p-5 bg-gray-900/80 glass rounded-xl text-gray-200 font-inter text-lg whitespace-pre-wrap break-words max-h-96 overflow-y-auto shadow-inner border border-primary/10">
         {prompt}
       </div>
       <button
         onClick={handleCopy}
         disabled={!prompt}
-        className={`mt-4 w-full flex items-center justify-center px-6 py-3 border border-transparent rounded-md shadow-sm text-base font-medium text-white ${
-          copied ? 'bg-green-600 hover:bg-green-700' : 'bg-indigo-600 hover:bg-indigo-700'
-        } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-indigo-500 transition duration-150 ease-in-out disabled:opacity-50`}
+        className={`mt-6 w-full flex items-center justify-center px-8 py-3 rounded-full font-bold text-white bg-gradient-to-r from-primary to-accent shadow-glow hover:scale-105 hover:shadow-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 font-poppins text-lg ${copied ? 'bg-green-600 hover:bg-green-700' : ''
+          } disabled:opacity-50`}
       >
         {copied ? (
           <>

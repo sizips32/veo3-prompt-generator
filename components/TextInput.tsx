@@ -15,10 +15,10 @@ interface TextInputProps {
 }
 
 const TextInput = ({ label, id, name, value, onChange, placeholder, isTextArea = false, rows = 3, className = '' }: TextInputProps): React.ReactElement => {
-  const commonClasses = "w-full p-3 bg-gray-700 border border-gray-600 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 ease-in-out placeholder-gray-400 text-gray-100";
+  const commonClasses = "w-full p-3 bg-gray-800/70 glass border border-primary/30 rounded-xl shadow focus:shadow-glow focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-200 placeholder-gray-400 text-gray-100 font-inter text-base";
   return (
     <div className={`mb-6 ${className}`}>
-      <label htmlFor={id} className="block text-sm font-medium text-indigo-300 mb-1">
+      <label htmlFor={id} className="block text-sm font-semibold text-primary mb-2 font-poppins tracking-wide transition-colors duration-200">
         {label}
       </label>
       {isTextArea ? (
@@ -29,7 +29,7 @@ const TextInput = ({ label, id, name, value, onChange, placeholder, isTextArea =
           value={value}
           onChange={onChange}
           placeholder={placeholder}
-          className={commonClasses}
+          className={commonClasses + ' resize-none'}
         />
       ) : (
         <input

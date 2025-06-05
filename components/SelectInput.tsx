@@ -13,7 +13,7 @@ interface SelectInputProps {
 const SelectInput = ({ label, id, name, value, onChange, options }: SelectInputProps): JSX.Element => {
   return (
     <div className="mb-6">
-      <label htmlFor={id} className="block text-sm font-medium text-indigo-300 mb-1">
+      <label htmlFor={id} className="block text-sm font-semibold text-primary mb-2 font-poppins tracking-wide transition-colors duration-200">
         {label}
       </label>
       <select
@@ -21,10 +21,10 @@ const SelectInput = ({ label, id, name, value, onChange, options }: SelectInputP
         name={name}
         value={value}
         onChange={onChange}
-        className="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 ease-in-out text-gray-100"
+        className="w-full p-3 bg-gray-800/70 glass border border-primary/30 rounded-xl shadow focus:shadow-glow focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-200 text-gray-100 font-inter text-base"
       >
         {options.map((option) => (
-          <option key={option.value} value={option.value} className="bg-gray-700 text-gray-100">
+          <option key={option.value} value={option.value} className="bg-gray-800 text-gray-100">
             {option.label}
           </option>
         ))}
