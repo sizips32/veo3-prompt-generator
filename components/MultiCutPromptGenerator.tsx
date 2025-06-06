@@ -19,7 +19,7 @@ const STYLE_OPTIONS = [
 ];
 
 const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
-const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${GEMINI_API_KEY}`;
+const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`;
 
 // AI 프롬프트 생성용 함수 (프롬프트 강화)
 const buildGeminiPrompt = (title: string, summary: string, cutCount: number, lang: 'ko' | 'en') => {
@@ -64,7 +64,18 @@ const MultiCutPromptGenerator = () => {
                 body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
             });
             const data = await res.json();
-            let text = data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
+            // Gemini API 전체 응답 콘솔 출력 (디버깅용)
+            console.log('Gemini API 전체 응답:', data);
+            let text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+            // text가 빈 문자열/쉼표/undefined/null 등 예외 케이스 우선 처리
+            if (!text || typeof text !== 'string' || text.trim() === '' || text.trim() === ',') {
+                setError('AI 응답이 비어있거나 올바르지 않습니다. (빈 문자열, 쉼표, undefined, null 등)\n[응답 미리보기]\n' + (text ?? ''));
+                console.error('Gemini 응답 원본:', text);
+                setIsLoading(false);
+                return;
+            }
+            // text 콘솔 출력 (디버깅용)
+            console.log('Gemini API text:', text);
             const { data: arr, error: parseError, raw } = parseGeminiResponse(text);
             if (!arr) {
                 const preview = raw.length > 300 ? raw.slice(0, 300) + ' ...' : raw;
