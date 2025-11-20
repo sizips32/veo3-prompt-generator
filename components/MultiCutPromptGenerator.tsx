@@ -76,7 +76,7 @@ const MultiCutPromptGenerator = () => {
             }
             // text 콘솔 출력 (디버깅용)
             console.log('Gemini API text:', text);
-            const { data: arr, error: parseError, raw } = parseGeminiResponse(text);
+            const { data: arr, raw } = parseGeminiResponse(text);
             if (!arr) {
                 const preview = raw.length > 300 ? raw.slice(0, 300) + ' ...' : raw;
                 setError(`AI 응답 파싱에 실패했습니다. 다시 시도해 주세요.\n\n[응답 미리보기]\n${preview}`);
@@ -113,7 +113,7 @@ const MultiCutPromptGenerator = () => {
     };
 
     return (
-        <div className="flex flex-col lg:flex-row gap-8 w-full">
+        <div className="flex flex-col xl:flex-row gap-8 w-full">
             {/* 입력 영역 */}
             <div className="flex-1">
                 <InputPanel
@@ -130,24 +130,57 @@ const MultiCutPromptGenerator = () => {
                 />
             </div>
             {/* 결과 영역 */}
-            <div className="flex-1 bg-gray-900/80 glass rounded-xl p-8 shadow-lg flex flex-col">
-                <h2 className="text-2xl font-bold text-primary font-montserrat tracking-tight flex items-center gap-2 mb-4">
-                    씬별 프롬프트 ({cutPrompts.length}/{cutCount})
-                </h2>
-                <div className="space-y-4">
-                    {isLoading && <div className="text-gray-400">AI가 프롬프트를 생성 중입니다...</div>}
-                    {!isLoading && cutPrompts.length === 0 && <div className="text-gray-400">컷별 프롬프트가 여기에 표시됩니다.</div>}
-                    {error && (
-                        <div className="text-red-400 font-bold mt-2 whitespace-pre-line">
-                            {error}
-                            <button
-                                onClick={handleGenerate}
-                                className="ml-4 px-4 py-1 rounded bg-red-600 text-white hover:bg-red-700 transition"
-                            >
-                                다시 시도
-                            </button>
+            <div className="flex-1 glass-panel rounded-2xl p-6 sm:p-8 flex flex-col h-fit sticky top-8">
+                <div className="flex items-center justify-between mb-6 pb-4 border-b border-surface-border">
+                    <h2 className="text-2xl font-bold text-white font-montserrat tracking-tight flex items-center gap-3">
+                        <span className="flex items-center justify-center w-10 h-10 rounded-lg bg-accent/20 text-accent text-xl">✨</span>
+                        Generated Script ({cutPrompts.length}/{cutCount})
+                    </h2>
+                    {cutPrompts.length > 0 && (
+                        <button
+                            onClick={handleLangToggle}
+                            className="px-4 py-2 rounded-lg bg-surface hover:bg-surface-hover text-xs font-mono text-accent border border-accent/30 transition-all duration-200"
+                        >
+                            {lang === 'ko' ? 'EN' : 'KO'}
+                        </button>
+                    )}
+                </div>
+
+                <div className="space-y-4 max-h-[800px] overflow-y-auto pr-2 custom-scrollbar">
+                    {isLoading && (
+                        <div className="flex flex-col items-center justify-center py-20 text-gray-400">
+                            <div className="w-16 h-16 border-4 border-accent/30 border-t-accent rounded-full animate-spin mb-6"></div>
+                            <p className="text-lg font-medium animate-pulse">AI is crafting your script...</p>
+                            <p className="text-sm opacity-60 mt-2">This usually takes about 10-15 seconds</p>
                         </div>
                     )}
+
+                    {!isLoading && cutPrompts.length === 0 && !error && (
+                        <div className="flex flex-col items-center justify-center py-20 text-gray-500 border-2 border-dashed border-surface-border rounded-xl">
+                            <span className="text-4xl mb-4 opacity-50">🎬</span>
+                            <p className="text-lg">Ready to generate</p>
+                            <p className="text-sm opacity-60 mt-1">Fill out the form and click Generate</p>
+                        </div>
+                    )}
+
+                    {error && (
+                        <div className="p-6 bg-red-500/10 border border-red-500/30 rounded-xl text-red-400">
+                            <div className="flex items-start gap-3">
+                                <span className="text-xl">⚠️</span>
+                                <div className="flex-1">
+                                    <h3 className="font-bold mb-2">Generation Failed</h3>
+                                    <p className="text-sm whitespace-pre-line mb-4 opacity-90">{error}</p>
+                                    <button
+                                        onClick={handleGenerate}
+                                        className="px-4 py-2 rounded-lg bg-red-500/20 hover:bg-red-500/30 text-red-300 text-sm font-medium transition-all duration-200"
+                                    >
+                                        Try Again
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
                     {cutPrompts.map((cut, idx) => (
                         <CutPromptCard
                             key={idx}

@@ -1,4 +1,4 @@
-import React, { useState, useCallback, ChangeEvent } from 'react';
+import { useState, useCallback, ChangeEvent } from 'react';
 import TextInput from './TextInput';
 import SelectInput from './SelectInput';
 import GeneratedPromptDisplay from './GeneratedPromptDisplay';
@@ -135,61 +135,111 @@ const SinglePromptGenerator = () => {
 
     return (
         <>
-            <div className="mb-8 mx-auto max-w-2xl">
+            <div className="mb-8 mx-auto max-w-2xl text-center">
                 <button
                     onClick={() => setShowGuide(!showGuide)}
-                    className="px-5 py-2 bg-gradient-to-r from-primary to-accent text-white rounded-full shadow-glow font-semibold hover:scale-105 hover:shadow-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 mb-4"
+                    className="px-6 py-2 bg-surface/30 border border-surface-border rounded-full text-sm font-medium text-gray-300 hover:bg-surface-hover hover:text-white hover:border-primary/50 transition-all duration-300 focus:outline-none mb-4"
                 >
-                    {showGuide ? '가이드 닫기' : '프롬프트 작성 가이드 보기'}
+                    {showGuide ? 'Close Guide' : 'View Prompt Guide'}
                 </button>
                 {showGuide && (
-                    <div className="mt-3 glass border border-primary/60 p-6 text-left text-base text-gray-100 shadow-glass animate-fade-in">
-                        <ul className="list-disc pl-6 space-y-2">
-                            <li><b>주제/장면:</b> 예) "고요한 밤하늘 아래 캠프파이어"</li>
-                            <li><b>주요 동작:</b> 예) "사람들이 모닥불 주위에서 노래를 부른다"</li>
-                            <li><b>스타일/영감:</b> 예) "시네마틱, 타임랩스, 항공 촬영"</li>
-                            <li><b>카메라/조명/색상:</b> 예) "드론 샷, 부드러운 조명, 따뜻한 색감"</li>
-                            <li><b>분위기/시간/환경:</b> 예) "평화로운, 새벽, 숲속"</li>
-                            <li><b>추가 세부사항:</b> 예) "4K, 네이티브 오디오, 16:9 비율"</li>
+                    <div className="mt-4 glass-panel p-6 text-left text-sm text-gray-300 rounded-xl animate-fade-in border-l-4 border-primary">
+                        <ul className="space-y-3">
+                            <li className="flex items-start gap-2"><span className="text-primary font-bold">Subject:</span> "Campfire under a starry night sky"</li>
+                            <li className="flex items-start gap-2"><span className="text-primary font-bold">Action:</span> "People singing around the bonfire"</li>
+                            <li className="flex items-start gap-2"><span className="text-primary font-bold">Style:</span> "Cinematic, Timelapse, Aerial shot"</li>
+                            <li className="flex items-start gap-2"><span className="text-primary font-bold">Tech:</span> "Drone shot, Soft lighting, Warm tones"</li>
                         </ul>
-                        <div className="mt-3 text-accent font-semibold">Veo3의 고화질, 오디오 동기화, 영화적 용어 지원을 적극 활용하세요!</div>
+                        <div className="mt-4 pt-4 border-t border-surface-border text-accent text-xs font-mono uppercase tracking-wider">
+                            Tip: Use Veo3's high-res & audio sync features!
+                        </div>
                     </div>
                 )}
             </div>
-            <div className="flex flex-col lg:flex-row gap-8">
-                <div className="flex-1 bg-gray-900/80 glass rounded-xl p-8 shadow-lg">
-                    <h2 className="text-2xl font-bold text-primary mb-8 pb-4 border-b border-primary/30 font-montserrat tracking-tight flex items-center gap-2">
-                        <span className="text-3xl">📝</span> 프롬프트 입력
+
+            <div className="flex flex-col xl:flex-row gap-8">
+                <div className="flex-1 glass-panel rounded-2xl p-6 sm:p-8">
+                    <h2 className="text-2xl font-bold text-white mb-8 pb-4 border-b border-surface-border font-montserrat tracking-tight flex items-center gap-3">
+                        <span className="flex items-center justify-center w-10 h-10 rounded-lg bg-primary/20 text-primary text-xl">📝</span>
+                        Prompt Builder
                     </h2>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                        <TextInput label="🎬 주제 / 장면 설명" id="subject" name="subject" value={promptElements.subject} onChange={handleChange} placeholder="예: 고요한 밤하늘 아래 캠프파이어" isTextArea rows={3} />
-                        <TextInput label="🏃 주요 액션" id="mainAction" name="mainAction" value={promptElements.mainAction} onChange={handleChange} placeholder="예: 두 사람이 마시멜로를 굽고 있다" />
-                        <TextInput label="✨ 핵심 요소" id="keyElements" name="keyElements" value={promptElements.keyElements} onChange={handleChange} placeholder="예: 반짝이는 별, 타닥거리는 불꽃, 통기타" />
-                        <SelectInput label="🎨 시각적 스타일" id="visualStyle" name="visualStyle" value={promptElements.visualStyle} onChange={handleChange} options={VISUAL_STYLES} />
-                        <TextInput label="🖼️ 예술적 영향" id="artisticInfluence" name="artisticInfluence" value={promptElements.artisticInfluence} onChange={handleChange} placeholder="예: style of Studio Ghibli, Van Gogh inspired" />
-                        <SelectInput label="📷 카메라 앵글" id="cameraAngle" name="cameraAngle" value={promptElements.cameraAngle} onChange={handleChange} options={CAMERA_ANGLES} />
-                        <SelectInput label="↔️ 카메라 움직임" id="cameraMovement" name="cameraMovement" value={promptElements.cameraMovement} onChange={handleChange} options={CAMERA_MOVEMENTS} />
-                        <SelectInput label="💡 조명 스타일" id="lightingStyle" name="lightingStyle" value={promptElements.lightingStyle} onChange={handleChange} options={LIGHTING_STYLES} />
-                        <SelectInput label="🌈 색상 팔레트" id="colorPalette" name="colorPalette" value={promptElements.colorPalette} onChange={handleChange} options={COLOR_PALETTES} />
-                        <TextInput label="🏞️ 배경/환경" id="setting" name="setting" value={promptElements.setting} onChange={handleChange} placeholder="예: 울창한 숲 속, 미래 도시의 마천루" />
-                        <SelectInput label="⏳ 시간대" id="timeOfDay" name="timeOfDay" value={promptElements.timeOfDay} onChange={handleChange} options={TIMES_OF_DAY} />
-                        <TextInput label="🎭 분위기" id="mood" name="mood" value={promptElements.mood} onChange={handleChange} placeholder="예: 평화로운, 신비로운, 긴장감 넘치는" />
-                        <SelectInput label="📐 화면 비율" id="aspectRatio" name="aspectRatio" value={promptElements.aspectRatio} onChange={handleChange} options={ASPECT_RATIOS} />
-                        <TextInput label="🚫 제외할 요소" id="negativePrompt" name="negativePrompt" value={promptElements.negativePrompt} onChange={handleChange} placeholder="예: blurry, ugly, text, watermark" />
-                        <TextInput label="⚙️ 추가 지시사항" id="additionalDetails" name="additionalDetails" value={promptElements.additionalDetails} onChange={handleChange} placeholder="예: 4K resolution, hyperrealistic, short 3 second clip" isTextArea rows={2} className="md:col-span-2" />
-                        <div className="md:col-span-2 flex flex-col sm:flex-row justify-end space-y-3 sm:space-y-0 sm:space-x-4 mt-6">
-                            <button type="button" onClick={handleReset} className="w-full sm:w-auto px-7 py-3 border border-gray-500 rounded-full font-semibold text-gray-300 bg-gray-800/70 hover:bg-gray-700/80 shadow transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">초기화</button>
-                            <button type="button" onClick={handleGeneratePrompt} disabled={isLoading} className={`w-full sm:w-auto px-10 py-3 rounded-full font-bold text-white bg-gradient-to-r from-primary to-accent shadow-glow hover:scale-105 hover:shadow-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 ${isLoading ? 'bg-gray-500 cursor-not-allowed shadow-none' : ''}`}>{isLoading ? (<span className="flex items-center justify-center"><svg className="animate-spin -ml-1 mr-2 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>생성 중...</span>) : '🚀 프롬프트 생성'}</button>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="md:col-span-2">
+                            <TextInput label="Subject / Scene" id="subject" name="subject" value={promptElements.subject} onChange={handleChange} placeholder="e.g. Campfire under a starry night sky" isTextArea rows={2} />
+                        </div>
+
+                        <TextInput label="Main Action" id="mainAction" name="mainAction" value={promptElements.mainAction} onChange={handleChange} placeholder="e.g. People singing around the fire" />
+                        <TextInput label="Key Elements" id="keyElements" name="keyElements" value={promptElements.keyElements} onChange={handleChange} placeholder="e.g. Sparkling stars, crackling fire" />
+
+                        <div className="md:col-span-2 h-px bg-surface-border my-2"></div>
+
+                        <SelectInput label="Visual Style" id="visualStyle" name="visualStyle" value={promptElements.visualStyle} onChange={handleChange} options={VISUAL_STYLES} />
+                        <TextInput label="Artistic Influence" id="artisticInfluence" name="artisticInfluence" value={promptElements.artisticInfluence} onChange={handleChange} placeholder="e.g. Studio Ghibli style" />
+
+                        <SelectInput label="Camera Angle" id="cameraAngle" name="cameraAngle" value={promptElements.cameraAngle} onChange={handleChange} options={CAMERA_ANGLES} />
+                        <SelectInput label="Camera Movement" id="cameraMovement" name="cameraMovement" value={promptElements.cameraMovement} onChange={handleChange} options={CAMERA_MOVEMENTS} />
+
+                        <SelectInput label="Lighting" id="lightingStyle" name="lightingStyle" value={promptElements.lightingStyle} onChange={handleChange} options={LIGHTING_STYLES} />
+                        <SelectInput label="Color Palette" id="colorPalette" name="colorPalette" value={promptElements.colorPalette} onChange={handleChange} options={COLOR_PALETTES} />
+
+                        <div className="md:col-span-2 h-px bg-surface-border my-2"></div>
+
+                        <TextInput label="Setting / Environment" id="setting" name="setting" value={promptElements.setting} onChange={handleChange} placeholder="e.g. Dense forest, Future city" />
+                        <SelectInput label="Time of Day" id="timeOfDay" name="timeOfDay" value={promptElements.timeOfDay} onChange={handleChange} options={TIMES_OF_DAY} />
+
+                        <TextInput label="Mood" id="mood" name="mood" value={promptElements.mood} onChange={handleChange} placeholder="e.g. Peaceful, Mysterious" />
+                        <SelectInput label="Aspect Ratio" id="aspectRatio" name="aspectRatio" value={promptElements.aspectRatio} onChange={handleChange} options={ASPECT_RATIOS} />
+
+                        <TextInput label="Negative Prompt" id="negativePrompt" name="negativePrompt" value={promptElements.negativePrompt} onChange={handleChange} placeholder="e.g. blurry, ugly, text" />
+                        <TextInput label="Additional Details" id="additionalDetails" name="additionalDetails" value={promptElements.additionalDetails} onChange={handleChange} placeholder="e.g. 4K, hyperrealistic" className="md:col-span-2" />
+
+                        <div className="md:col-span-2 flex flex-col sm:flex-row justify-end gap-4 mt-8 pt-6 border-t border-surface-border">
+                            <button
+                                type="button"
+                                onClick={handleReset}
+                                className="px-6 py-3 rounded-xl font-medium text-gray-400 hover:text-white hover:bg-surface-hover transition-all duration-200"
+                            >
+                                Reset
+                            </button>
+                            <button
+                                type="button"
+                                onClick={handleGeneratePrompt}
+                                disabled={isLoading}
+                                className={`flex-1 sm:flex-none px-8 py-3 rounded-xl font-bold text-white shadow-neon-primary transition-all duration-300 ${isLoading
+                                    ? 'bg-surface cursor-not-allowed opacity-70'
+                                    : 'bg-primary hover:bg-primary-hover hover:scale-105'
+                                    }`}
+                            >
+                                {isLoading ? (
+                                    <span className="flex items-center justify-center gap-2">
+                                        <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                        </svg>
+                                        Generating...
+                                    </span>
+                                ) : (
+                                    <span className="flex items-center justify-center gap-2">
+                                        🚀 Generate Prompt
+                                    </span>
+                                )}
+                            </button>
                         </div>
                     </div>
                 </div>
-                <div className="flex-1 bg-gray-900/80 glass rounded-xl p-8 shadow-lg flex flex-col">
-                    <div className="flex items-center justify-between mb-4">
-                        <h2 className="text-2xl font-bold text-primary font-montserrat tracking-tight flex items-center gap-2">
-                            <span className="text-3xl">✨</span> 생성된 프롬프트
+
+                <div className="flex-1 glass-panel rounded-2xl p-6 sm:p-8 flex flex-col h-fit sticky top-8">
+                    <div className="flex items-center justify-between mb-6 pb-4 border-b border-surface-border">
+                        <h2 className="text-2xl font-bold text-white font-montserrat tracking-tight flex items-center gap-3">
+                            <span className="flex items-center justify-center w-10 h-10 rounded-lg bg-accent/20 text-accent text-xl">✨</span>
+                            Result
                         </h2>
-                        <button onClick={handleLangToggle} className="ml-4 px-5 py-2 rounded-full bg-gradient-to-r from-primary to-accent text-white font-semibold shadow-glow hover:scale-105 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2">
-                            {lang === 'ko' ? '영문으로 보기' : '한글로 보기'}
+                        <button
+                            onClick={handleLangToggle}
+                            className="px-4 py-2 rounded-lg bg-surface hover:bg-surface-hover text-xs font-mono text-accent border border-accent/30 transition-all duration-200"
+                        >
+                            {lang === 'ko' ? 'EN' : 'KO'}
                         </button>
                     </div>
                     <GeneratedPromptDisplay prompt={generatedPrompt} />
